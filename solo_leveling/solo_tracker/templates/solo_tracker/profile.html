@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - Solo Tracker{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Profile Header -->
+    <div class="bg-gradient-to-r from-purple-900/40 to-blue-900/40 border border-purple-500/50 rounded-lg p-8 mb-8 glow-effect">
+        <div class="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
+            <!-- Avatar -->
+            <div class="relative">
+                <div class="w-32 h-32 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center text-4xl font-bold border-4 border-purple-400 shadow-lg shadow-purple-500/50">
+                    {{ user.username|first|upper }}
+                </div>
+                <div class="absolute -bottom-2 -right-2 bg-yellow-500 text-black rounded-full w-10 h-10 flex items-center justify-center font-bold text-sm border-2 border-yellow-400">
+                    {{ profile.level }}
+                </div>
+            </div>
+
+            <!-- Profile Info -->
+            <div class="flex-1 text-center md:text-left">
+                <h1 class="text-4xl font-bold text-white mb-2">{{ user.username }}</h1>
+                <p class="text-xl text-purple-300 mb-4">Shadow Hunter • Level {{ profile.level }}</p>
+                
+                <!-- Level Progress -->
+                <div class="mb-6">
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-gray-300">Level Progress</span>
+                        <span class="text-gray-300">{{ profile.current_xp }} / {{ profile.level }}000 XP</span>
+                    </div>
+                    <div class="w-full bg-slate-700 rounded-full h-4">
+                        <div class="bg-gradient-to-r from-purple-500 to-blue-500 h-4 rounded-full glow-effect transition-all duration-500" 
+                             style="width: {{ profile.xp_percentage }}%"></div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-yellow-400">{{ profile.total_xp|floatformat:0 }}</div>
+                        <div class="text-sm text-gray-400">Total XP</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-green-400">{{ completed_quests }}</div>
+                        <div class="text-sm text-gray-400">Quests Done</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-orange-400">{{ profile.streak }}</div>
+                        <div class="text-sm text-gray-400">Day Streak</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-purple-400">#{{ profile.rank }}</div>
+                        <div class="text-sm text-gray-400">Global Rank</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Stats -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Performance Overview -->
+            <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg">
+                <div class="p-6 border-b border-purple-500/20">
+                    <h2 class="text-2xl font-bold flex items-center space-x-3">
+                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        <span>Performance Overview</span>
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Completion Rate -->
+                        <div class="text-center">
+                            <div class="relative w-32 h-32 mx-auto mb-4">
+                                <svg class="w-32 h-32 transform -rotate-90" viewBox="0 0 36 36">
+                                    <path class="text-slate-700" stroke="currentColor" stroke-width="3" fill="none" 
+                                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                    <path class="text-green-400" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"
+                                          stroke-dasharray="{{ completion_rate }}, 100" 
+                                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-2xl font-bold text-white">{{ completion_rate|floatformat:0 }}%</span>
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-semibold text-white">Quest Completion Rate</h3>
+                            <p class="text-sm text-gray-400">{{ completed_quests }} of {{ total_quests }} quests completed</p>
+                        </div>
+
+                        <!-- Level Progress -->
+                        <div class="text-center">
+                            <div class="relative w-32 h-32 mx-auto mb-4">
+                                <svg class="w-32 h-32 transform -rotate-90" viewBox="0 0 36 36">
+                                    <path class="text-slate-700" stroke="currentColor" stroke-width="3" fill="none" 
+                                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                    <path class="text-purple-400" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"
+                                          stroke-dasharray="{{ profile.xp_percentage }}, 100" 
+                                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-2xl font-bold text-white">{{ profile.level }}</span>
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-semibold text-white">Current Level</h3>
+                            <p class="text-sm text-gray-400">{{ profile.current_xp }} / {{ profile.level }}000 XP to next level</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Statistics -->
+            <div class="bg-slate-800/50 border border-blue-500/30 rounded-lg">
+                <div class="p-6 border-b border-blue-500/20">
+                    <h2 class="text-2xl font-bold flex items-center space-x-3">
+                        <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
+                        </svg>
+                        <span>Quest Categories</span>
+                    </h2>
+                </div>
+                <div class="p-6">
+                    {% if category_stats %}
+                        <div class="space-y-4">
+                            {% for stat in category_stats %}
+                            <div class="flex items-center justify-between p-4 bg-slate-700/30 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-white">{{ stat.quest__category__name }}</h3>
+                                        <p class="text-sm text-gray-400">{{ stat.count }} quests completed</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xl font-bold text-blue-400">{{ stat.count }}</div>
+                                    <div class="text-sm text-gray-400">Completed</div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-8">
+                            <svg class="w-16 h-16 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <h3 class="text-lg font-semibold text-gray-400 mb-2">No Quest Data</h3>
+                            <p class="text-gray-500">Complete some quests to see your category statistics!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-8">
+            <!-- Achievements -->
+            <div class="bg-slate-800/50 border border-yellow-500/30 rounded-lg">
+                <div class="p-6 border-b border-yellow-500/20">
+                    <h2 class="text-xl font-bold flex items-center space-x-3">
+                        <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <span>Achievements</span>
+                    </h2>
+                </div>
+                <div class="p-6">
+                    {% if achievements %}
+                        <div class="space-y-3">
+                            {% for user_achievement in achievements %}
+                            <div class="flex items-center space-x-3 p-3 bg-gradient-to-r from-yellow-900/20 to-orange-900/20 border border-yellow-500/30 rounded-lg">
+                                <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-semibold text-white text-sm">{{ user_achievement.achievement.name }}</h3>
+                                    <p class="text-xs text-gray-400">{{ user_achievement.achievement.description }}</p>
+                                    <p class="text-xs text-yellow-400 mt-1">Earned {{ user_achievement.earned_at|date:"M d, Y" }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-8">
+                            <svg class="w-12 h-12 text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                            <h3 class="text-sm font-semibold text-gray-400 mb-1">No Achievements Yet</h3>
+                            <p class="text-xs text-gray-500">Complete quests to unlock achievements!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="bg-slate-800/50 border border-green-500/30 rounded-lg">
+                <div class="p-6 border-b border-green-500/20">
+                    <h2 class="text-xl font-bold flex items-center space-x-3">
+                        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Hunter Stats</span>
+                    </h2>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-400">Member Since</span>
+                        <span class="text-white font-semibold">{{ user.date_joined|date:"M Y" }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-400">Last Activity</span>
+                        <span class="text-white font-semibold">{{ profile.last_activity|date:"M d" }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-400">Best Streak</span>
+                        <span class="text-orange-400 font-semibold">{{ profile.streak }} days</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-400">XP to Next Level</span>
+                        <span class="text-purple-400 font-semibold">{{ profile.xp_to_next_level }} XP</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}Leaderboard - Solo Tracker{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Header Section -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent mb-4">
+            Hunter Rankings
+        </h1>
+        <p class="text-gray-400 text-lg">Compete with hunters worldwide and climb the ranks</p>
+    </div>
+
+    <!-- Your Rank Card -->
+    <div class="mb-8 bg-gradient-to-r from-purple-900/40 to-blue-900/40 border border-purple-500/50 rounded-lg p-6 glow-effect">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center border-4 border-purple-400 text-xl font-bold">
+                    {{ user.username|first|upper }}
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-white">{{ user.username }}</h2>
+                    <p class="text-purple-300">Your Current Position</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="text-3xl font-bold text-yellow-400">#{{ user_profile.rank }}</div>
+                <div class="text-sm text-gray-400">Global Rank</div>
+                <div class="text-lg font-semibold text-purple-300 mt-2">
+                    Level {{ user_profile.level }} • {{ user_profile.total_xp|floatformat:0 }} XP
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Table -->
+    <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-purple-900/50 to-blue-900/50 p-6 border-b border-purple-500/30">
+            <h2 class="text-2xl font-bold flex items-center space-x-3">
+                <svg class="w-8 h-8 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                </svg>
+                <span>Top Hunters</span>
+            </h2>
+        </div>
+
+        <div class="divide-y divide-slate-700/50">
+            {% for entry in leaderboard %}
+            <div class="p-6 hover:bg-slate-700/30 transition-all duration-300 
+                {% if entry.user == user %}bg-purple-900/20 border-l-4 border-purple-500{% endif %}">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <!-- Rank Badge -->
+                        <div class="relative">
+                            {% if forloop.counter <= 3 %}
+                                <div class="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold relative
+                                    {% if forloop.counter == 1 %}bg-gradient-to-br from-yellow-400 to-yellow-600 text-black shadow-lg shadow-yellow-400/50
+                                    {% elif forloop.counter == 2 %}bg-gradient-to-br from-gray-300 to-gray-500 text-black shadow-lg shadow-gray-400/50
+                                    {% elif forloop.counter == 3 %}bg-gradient-to-br from-orange-400 to-orange-600 text-black shadow-lg shadow-orange-400/50
+                                    {% endif %}">
+                                    {{ forloop.counter }}
+                                    {% if forloop.counter == 1 %}
+                                        <svg class="absolute -top-2 -right-2 w-6 h-6 text-yellow-300" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732L14.146 12.8l-1.179 4.456a1 1 0 01-1.934 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732L9.854 7.2l1.179-4.456A1 1 0 0112 2z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <div class="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold bg-slate-600 text-white border-2 border-slate-500">
+                                    {{ forloop.counter }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Avatar -->
+                        <div class="w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold border-2
+                            {% if entry.user == user %}bg-purple-600 border-purple-400
+                            {% elif forloop.counter <= 3 %}bg-gradient-to-br from-blue-500 to-purple-600 border-blue-400
+                            {% else %}bg-slate-600 border-slate-500{% endif %}">
+                            {{ entry.user.username|first|upper }}
+                        </div>
+
+                        <!-- User Info -->
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <h3 class="text-lg font-bold text-white">
+                                    {% if entry.user == user %}
+                                        {{ entry.user.username }} <span class="text-purple-400">(You)</span>
+                                    {% else %}
+                                        {{ entry.user.username }}
+                                    {% endif %}
+                                </h3>
+                                {% if forloop.counter <= 3 %}
+                                    <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732L14.146 12.8l-1.179 4.456a1 1 0 01-1.934 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732L9.854 7.2l1.179-4.456A1 1 0 0112 2z" clip-rule="evenodd"></path>
+                                    </svg>
+                                {% endif %}
+                            </div>
+                            <div class="flex items-center space-x-4 text-sm text-gray-400">
+                                <span>Level {{ entry.level }}</span>
+                                <span>•</span>
+                                <span>{{ entry.streak }} day streak</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-white">{{ entry.total_xp|floatformat:0 }}</div>
+                        <div class="text-sm text-gray-400">Total XP</div>
+                        <div class="mt-2">
+                            <div class="w-32 bg-slate-700 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full" 
+                                    style="width: {{ entry.current_xp|div:entry.level|div:1000|mul:100 }}%"></div>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1">{{ entry.current_xp }}/{{ entry.level }}000 XP</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Stats for Top 3 -->
+                {% if forloop.counter <= 3 %}
+                <div class="mt-4 pt-4 border-t border-slate-700/50">
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <div class="text-lg font-bold text-blue-400">{{ entry.level }}</div>
+                            <div class="text-xs text-gray-400">Level</div>
+                        </div>
+                        <div>
+                            <div class="text-lg font-bold text-green-400">{{ entry.streak }}</div>
+                            <div class="text-xs text-gray-400">Streak</div>
+                        </div>
+                        <div>
+                            <div class="text-lg font-bold text-purple-400">#{{ forloop.counter }}</div>
+                            <div class="text-xs text-gray-400">Rank</div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="p-12 text-center">
+                <svg class="w-16 h-16 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+                <h3 class="text-xl font-semibold text-gray-400 mb-2">No Hunters Yet</h3>
+                <p class="text-gray-500">Be the first to start your journey!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Stats Summary -->
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-slate-800/50 border border-blue-500/30 rounded-lg p-6 text-center">
+            <svg class="w-12 h-12 text-blue-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+            <div class="text-2xl font-bold text-white">{{ leaderboard|length }}</div>
+            <div class="text-sm text-gray-400">Total Hunters</div>
+        </div>
+
+        <div class="bg-slate-800/50 border border-purple-500/30 rounded-lg p-6 text-center">
+            <svg class="w-12 h-12 text-purple-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732L14.146 12.8l-1.179 4.456a1 1 0 01-1.934 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732L9.854 7.2l1.179-4.456A1 1 0 0112 2z" clip-rule="evenodd"></path>
+            </svg>
+            <div class="text-2xl font-bold text-white">
+                {% if leaderboard %}{{ leaderboard.0.level }}{% else %}0{% endif %}
+            </div>
+            <div class="text-sm text-gray-400">Highest Level</div>
+        </div>
+
+        <div class="bg-slate-800/50 border border-yellow-500/30 rounded-lg p-6 text-center">
+            <svg class="w-12 h-12 text-yellow-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
+            </svg>
+            <div class="text-2xl font-bold text-white">
+                {% if leaderboard %}{{ leaderboard.0.total_xp|floatformat:0 }}{% else %}0{% endif %}
+            </div>
+            <div class="text-sm text-gray-400">Highest XP</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

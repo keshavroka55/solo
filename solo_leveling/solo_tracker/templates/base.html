@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Solo Tracker{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'solo-purple': '#8b5cf6',
+                        'solo-blue': '#3b82f6',
+                        'solo-dark': '#0f172a',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(139, 92, 246, 0.4); }
+            50% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.8), 0 0 30px rgba(139, 92, 246, 0.6); }
+        }
+        
+        @keyframes levelUp {
+            0% { transform: scale(1); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .glow-effect { animation: glow 2s ease-in-out infinite; }
+        .level-up-animation { animation: levelUp 0.6s ease-out; }
+        .quest-card:hover { transform: translateY(-2px); transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 text-white min-h-screen">
+    <!-- Level Up Modal -->
+    <div id="levelUpModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden">
+        <div class="text-center animate-pulse">
+            <div class="text-6xl font-bold text-purple-400 mb-4 animate-bounce">LEVEL UP!</div>
+            <div id="newLevel" class="text-2xl text-blue-400"></div>
+            <div class="mt-4">
+                <svg class="w-16 h-16 text-orange-400 mx-auto animate-spin" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="border-b border-purple-500/20 bg-slate-900/50 backdrop-blur-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'solo_tracker:dashboard' %}" class="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                        Solo Tracker
+                    </a>
+                    <div class="hidden md:flex space-x-6">
+                        <a href="{% url 'solo_tracker:dashboard' %}" class="hover:text-purple-400 transition-colors">Dashboard</a>
+                        <a href="{% url 'solo_tracker:create_quest' %}" class="hover:text-purple-400 transition-colors">Quest</a>
+                        <a href="{% url 'solo_tracker:leaderboard' %}" class="hover:text-purple-400 transition-colors">Leaderboard</a>
+                        <a href="{% url 'solo_tracker:profile' %}" class="hover:text-purple-400 transition-colors">Profile</a>
+                    </div>
+                </div>
+                {% if user.is_authenticated %}
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <div class="text-sm text-gray-400">Hunter Rank #{{ user.userprofile.rank }}</div>
+                        <div class="font-semibold">{{ user.username }}</div>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center border-2 border-purple-500">
+                        <a href="{% url "solo_tracker:profile" %}"></a>
+                        {{ user.username|first|upper }}
+
+                    </div>
+                    <a href="{% url 'solo_tracker:logout' %}" class="text-sm hover:text-purple-400">Logout</a>
+                </div>
+                {% else %}
+                <div class="space-x-4">
+                    <a href="{% url 'solo_tracker:login' %}" class="hover:text-purple-400">Login</a>
+                    <a href="{% url 'solo_tracker:register' %}" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg">Register</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="container mx-auto px-4 py-4">
+        {% for message in messages %}
+        <div class="bg-green-900/30 border border-green-500/30 text-green-400 px-4 py-3 rounded-lg mb-4">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <script>
+        // Level up animation
+        function showLevelUp(level) {
+            const modal = document.getElementById('levelUpModal');
+            const levelText = document.getElementById('newLevel');
+            levelText.textContent = `Level ${level}`;
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 2000);
+        }
+
+        // Quest completion with AJAX
+        function completeQuest(questId) {
+            fetch(`/complete-quest/${questId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update UI
+                    const questCard = document.querySelector(`[data-quest-id="${questId}"]`);
+                    questCard.classList.add('bg-green-900/20', 'border-green-500/30');
+                    questCard.querySelector('.complete-btn').style.display = 'none';
+                    questCard.querySelector('.completed-icon').style.display = 'block';
+                    
+                    // Show level up if applicable
+                    if (data.level_up) {
+                        showLevelUp(data.new_level);
+                    }
+                    
+                    // Update XP display
+                    updateXPDisplay(data.current_xp, data.total_xp, data.new_level);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function updateXPDisplay(currentXP, totalXP, level) {
+            // Update level display
+            const levelDisplay = document.querySelector('.level-display');
+            if (levelDisplay) {
+                levelDisplay.textContent = `Level ${level}`;
+            }
+            
+            // Update XP progress bar
+            const progressBar = document.querySelector('.xp-progress');
+            if (progressBar) {
+                const percentage = (currentXP / (level * 1000)) * 100;
+                progressBar.style.width = `${percentage}%`;
+            }
+            
+            // Update total XP
+            const totalXPDisplay = document.querySelector('.total-xp');
+            if (totalXPDisplay) {
+                totalXPDisplay.textContent = totalXP.toLocaleString();
+            }
+        }
+    </script>
+</body>
+</html>

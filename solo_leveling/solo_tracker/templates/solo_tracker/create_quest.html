@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Quest - Solo Tracker{% endblock %}
+
+{% block content %}
+<!-- Include Notification System -->
+{% include 'solo_tracker/notification.html' %}
+
+<div class="max-w-4xl mx-auto">
+    <!-- Header with Solo Leveling Style -->
+    <div class="text-center mb-8">
+        <div class="relative inline-block">
+            <!-- Decorative Corner Elements -->
+            <div class="absolute -top-4 -left-4 w-8 h-8 border-l-2 border-t-2 border-cyan-400 opacity-80"></div>
+            <div class="absolute -top-4 -right-4 w-8 h-8 border-r-2 border-t-2 border-cyan-400 opacity-80"></div>
+            <div class="absolute -bottom-4 -left-4 w-8 h-8 border-l-2 border-b-2 border-cyan-400 opacity-80"></div>
+            <div class="absolute -bottom-4 -right-4 w-8 h-8 border-r-2 border-b-2 border-cyan-400 opacity-80"></div>
+            
+            <div class="bg-gradient-to-r from-slate-900/90 to-purple-900/90 border border-cyan-400/30 rounded-lg p-8 backdrop-blur-sm">
+                <h1 class="text-4xl font-bold text-white mb-2 tracking-wider">QUEST DIRECTIONS</h1>
+                <div class="text-cyan-400 text-lg">DAILY QUEST - GETTING READY TO BECOME POWERFUL</div>
+                <div class="w-24 h-1 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto mt-4 rounded-full"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quest Creation Form -->
+    <div class="relative">
+        <!-- Ornate Border -->
+        <div class="absolute -top-2 -left-2 w-6 h-6 border-l-2 border-t-2 border-cyan-400/60"></div>
+        <div class="absolute -top-2 -right-2 w-6 h-6 border-r-2 border-t-2 border-cyan-400/60"></div>
+        <div class="absolute -bottom-2 -left-2 w-6 h-6 border-l-2 border-b-2 border-cyan-400/60"></div>
+        <div class="absolute -bottom-2 -right-2 w-6 h-6 border-r-2 border-b-2 border-cyan-400/60"></div>
+
+        <div class="bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-cyan-400/30 rounded-lg p-8 backdrop-blur-sm">
+            <form method="post" id="questForm" class="space-y-8">
+                {% csrf_token %}
+                
+                <!-- Goal Section Header -->
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-4 tracking-wide">GOAL</h2>
+                    <div class="w-16 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent mx-auto"></div>
+                </div>
+
+                <!-- Quest Title -->
+                <div class="space-y-2">
+                    <label class="block text-cyan-300 font-semibold tracking-wide">Quest Title</label>
+                    {{ form.title }}
+                </div>
+
+                <!-- Quest Description -->
+                <div class="space-y-2">
+                    <label class="block text-cyan-300 font-semibold tracking-wide">Description</label>
+                    {{ form.description }}
+                </div>
+
+                <!-- Quest Settings Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Difficulty -->
+                    <div class="space-y-2">
+                        <label class="block text-cyan-300 font-semibold tracking-wide">Difficulty</label>
+                        {{ form.difficulty }}
+                    </div>
+
+                    <!-- Quest Type -->
+                    <div class="space-y-2">
+                        <label class="block text-cyan-300 font-semibold tracking-wide">Quest Type</label>
+                        {{ form.quest_type }}
+                    </div>
+
+                    <!-- Target Count -->
+                    <div class="space-y-2">
+                        <label class="block text-cyan-300 font-semibold tracking-wide">Target Count</label>
+                        {{ form.target_count }}
+                    </div>
+
+                    <!-- Reminder Time -->
+                    <div class="space-y-2">
+                        <label class="block text-cyan-300 font-semibold tracking-wide">Reminder Time</label>
+                        {{ form.reminder_time }}
+                    </div>
+                </div>
+
+                <!-- Reminder Toggle -->
+                <div class="flex items-center space-x-3">
+                    {{ form.reminder_enabled }}
+                    <label for="{{ form.reminder_enabled.id_for_label }}" class="text-cyan-300 font-semibold tracking-wide">
+                        Enable Reminder Notifications
+                    </label>
+                </div>
+
+                <!-- Warning Section -->
+                <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-4 mt-6">
+                    <div class="flex items-start space-x-3">
+                        <svg class="w-6 h-6 text-red-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <p class="text-red-300 font-semibold">WARNING</p>
+                            <p class="text-red-200 text-sm mt-1">
+                                Failing to complete this daily quest will bring a punishment associated with this quest.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center pt-6">
+                    <button type="submit" 
+                            class="bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-600 hover:via-blue-700 hover:to-purple-700 text-white font-bold py-4 px-12 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg shadow-cyan-500/25 border border-cyan-400/30 tracking-wide text-lg">
+                        CREATE QUEST
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Timer Icon at Bottom -->
+    <div class="text-center mt-8">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-slate-800/50 border border-cyan-400/30 rounded-full">
+            <svg class="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('questForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch('{% url "solo_tracker:create_quest" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Clear form fields
+            document.getElementById('questForm').reset();
+            
+            // Show success notification
+            showNotification('Quest Created!', data.message, 'achievement');
+            
+            // Redirect to dashboard after a short delay
+            setTimeout(() => {
+                window.location.href = '{% url "solo_tracker:dashboard" %}';
+            }, 2000);
+        } else {
+            // Show error notification
+            let errorMessage = 'Failed to create quest. Please check your inputs.';
+            if (data.errors) {
+                errorMessage = Object.values(data.errors).flat().join(' ');
+            }
+            showNotification('Error', errorMessage, 'warning');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error', 'Failed to create quest. Please try again.', 'warning');
+    });
+});
+</script>
+{% endblock %}

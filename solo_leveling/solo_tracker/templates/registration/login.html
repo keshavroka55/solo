@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login - Solo Tracker{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <!-- Background Image -->
+    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" 
+        style="background-image: url('{% static 'images/solo1.jpg' %}');">
+        <div class="absolute inset-0 bg-gradient-to-r from-purple-900/80 via-purple-800/60 to-transparent"></div>
+    </div>
+    
+    <!-- Animated Background Effects -->
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div class="absolute top-1/2 left-1/2 w-48 h-48 bg-cyan-500/10 rounded-full blur-2xl animate-pulse delay-500"></div>
+    </div>
+
+    <!-- Login Form Container -->
+    <div class="relative z-10 w-full max-w-md mx-4">
+        <!-- Solo Leveling Branding -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2 tracking-wider">
+                SOLO LEVELING
+            </h1>
+            <div class="text-2xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+                Become a S rank Hunter
+            </div>
+            <div class="w-16 h-1 bg-gradient-to-r from-purple-500 to-cyan-400 mx-auto mt-4 rounded-full"></div>
+        </div>
+
+        <!-- Login Form with Ornate Border -->
+        <div class="relative">
+            <!-- Decorative Corner Elements -->
+            <div class="absolute -top-4 -left-4 w-8 h-8 border-l-2 border-t-2 border-cyan-400 opacity-80"></div>
+            <div class="absolute -top-4 -right-4 w-8 h-8 border-r-2 border-t-2 border-cyan-400 opacity-80"></div>
+            <div class="absolute -bottom-4 -left-4 w-8 h-8 border-l-2 border-b-2 border-cyan-400 opacity-80"></div>
+            <div class="absolute -bottom-4 -right-4 w-8 h-8 border-r-2 border-b-2 border-cyan-400 opacity-80"></div>
+
+            <!-- Main Form Container -->
+            <div class="bg-gradient-to-br from-slate-900/90 via-purple-900/80 to-slate-900/90 backdrop-blur-md border border-cyan-400/30 rounded-lg p-8 shadow-2xl shadow-purple-500/20">
+                <!-- Login Header -->
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-2 tracking-wide">Login</h2>
+                    <div class="w-12 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent mx-auto"></div>
+                </div>
+
+                <!-- Login Form -->
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    <!-- Email Field -->
+                    <div class="relative">
+                        <label for="id_username" class="block text-sm font-medium text-cyan-300 mb-2 tracking-wide">
+                            Email
+                        </label>
+                        <div class="relative">
+                            <input type="text" 
+                                name="username" 
+                                id="id_username"
+                                class="w-full bg-transparent border-b-2 border-cyan-400/50 focus:border-cyan-400 text-white placeholder-gray-400 py-3 px-0 transition-all duration-300 focus:outline-none"
+                                placeholder="Enter your email"
+                                required>
+                            <div class="absolute right-0 top-3">
+                                <svg class="w-5 h-5 text-cyan-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="relative">
+                        <label for="id_password" class="block text-sm font-medium text-cyan-300 mb-2 tracking-wide">
+                            Password
+                        </label>
+                        <div class="relative">
+                            <input type="password" 
+                                name="password" 
+                                id="id_password"
+                                class="w-full bg-transparent border-b-2 border-cyan-400/50 focus:border-cyan-400 text-white placeholder-gray-400 py-3 px-0 transition-all duration-300 focus:outline-none"
+                                placeholder="Enter your password"
+                                required>
+                            <div class="absolute right-0 top-3">
+                                <svg class="w-5 h-5 text-cyan-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Remember Me & Forgot Password -->
+                    <div class="flex items-center justify-between text-sm">
+                        <label class="flex items-center text-gray-300">
+                            <input type="checkbox" class="mr-2 rounded bg-transparent border-cyan-400/50 text-cyan-400 focus:ring-cyan-400 focus:ring-offset-0">
+                            Remember me
+                        </label>
+                        <a href="#" class="text-cyan-400 hover:text-cyan-300 transition-colors">
+                            Forgot Password?
+                        </a>
+                    </div>
+
+                    <!-- Login Button -->
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 hover:from-purple-700 hover:via-blue-700 hover:to-cyan-600 text-white font-bold py-4 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg shadow-purple-500/25 border border-cyan-400/30">
+                        <span class="tracking-wide text-lg">Login</span>
+                    </button>
+
+                    <!-- Error Messages -->
+                    {% if form.errors %}
+                        <div class="bg-red-900/30 border border-red-500/50 rounded-lg p-4 mt-4">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-red-300 text-sm">Invalid credentials. Please try again.</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                </form>
+
+                <!-- Sign Up Link -->
+                <div class="mt-8 text-center">
+                    <p class="text-gray-400">
+                        Don't have an account? 
+                        <a href="{% url 'solo_tracker:register' %}" class="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">
+                            Sign Up
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flame Effect -->
+        <div class="absolute top-1/2 right-8 transform -translate-y-1/2">
+            <div class="w-12 h-16 bg-gradient-to-t from-orange-500 via-yellow-400 to-red-500 rounded-full blur-sm animate-pulse opacity-80"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Custom checkbox styling */
+    input[type="checkbox"] {
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border: 1px solid rgba(34, 211, 238, 0.5);
+        border-radius: 3px;
+        background: transparent;
+        position: relative;
+    }
+    
+    input[type="checkbox"]:checked {
+        background: linear-gradient(45deg, #8b5cf6, #06b6d4);
+        border-color: #06b6d4;
+    }
+    
+    input[type="checkbox"]:checked::after {
+        content: '✓';
+        position: absolute;
+        top: -2px;
+        left: 1px;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    
+    /* Glowing input focus effect */
+    input:focus {
+        box-shadow: 0 0 10px rgba(34, 211, 238, 0.3);
+    }
+</style>
+{% endblock %}
