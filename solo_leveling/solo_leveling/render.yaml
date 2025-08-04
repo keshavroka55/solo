@@ -4,7 +4,7 @@ services:
     runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn solo_leveling.wsgi:application
-    workingDir: solo_leveling
+    # workingDir: solo_leveling
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: solo_leveling.settings
